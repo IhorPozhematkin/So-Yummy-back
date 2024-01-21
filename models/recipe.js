@@ -81,4 +81,6 @@ const schemas = { addSchema };
 
 const Recipe = model("recipe", recipeSchema);
 
-module.exports = { Recipe, schemas };
+const OwnRecipe = model("ownRecipes", recipeSchema, "ownRecipes");
+
+module.exports = { Recipe, OwnRecipe, schemas };

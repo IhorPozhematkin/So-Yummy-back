@@ -2,7 +2,7 @@ const fs = require("fs/promises");
 const jimp = require("jimp");
 const path = require("path");
 
-const { Recipe } = require("../models/recipe");
+const { OwnRecipe } = require("../models/recipe");
 const { ctrlWrapper, HttpError } = require("../helpers");
 
 const recipesDir = path.join(__dirname, "../", "public", "recipes");
@@ -35,7 +35,7 @@ const addRecipe = async (req, res) => {
 
   let result;
 
-  result = await Recipe.create({
+  result = await OwnRecipe.create({
     title,
     category,
     instructions,
@@ -69,7 +69,7 @@ const addRecipe = async (req, res) => {
 
   await fs.unlink(tempUpload);
 
-  result = await Recipe.findByIdAndUpdate(
+  result = await OwnRecipe.findByIdAndUpdate(
     result._id,
     {
       $set: {
@@ -86,13 +86,13 @@ const addRecipe = async (req, res) => {
 
 const getRecipesByOwner = async (req, res) => {
   const { _id: owner } = req.user;
-  const result = await Recipe.find({ owner }, "-createdAt -updatedAt");
+  const result = await OwnRecipe.find({ owner }, "-createdAt -updatedAt");
   res.json(result);
 };
 
 const deleteRecipe = async (req, res) => {
   const { id } = req.params;
-  const result = await Recipe.findByIdAndDelete(id);
+  const result = await OwnRecipe.findByIdAndDelete(id);
   if (!result) {
     throw HttpError(404, "Not found");
   }
