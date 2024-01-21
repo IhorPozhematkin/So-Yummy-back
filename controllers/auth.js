@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const gravatar = require("gravatar");
 const path = require("path");
 const fs = require("fs/promises");
+
 const jimp = require("jimp");
 const { nanoid } = require("nanoid");
 
@@ -129,15 +130,34 @@ const updateById = async (req, res) => {
 const updateAvatar = async (req, res) => {
   const { _id } = req.user;
   const { path: tempUpload, originalname } = req.file;
-  const filename = `${_id}_${originalname}`;
-  const resultUpload = path.join(avatarsDir, filename);
-  const image = await jimp.read(tempUpload);
-  await image.resize(103, 103).write(tempUpload);
-  await fs.rename(tempUpload, resultUpload);
-  const avatarURL = path.join("avatars", filename);
-  await User.findByIdAndUpdate(_id, { avatarURL });
 
-  res.json({ avatarURL });
+  const avatarURLs = [];
+
+  const originalImage = await jimp.read(tempUpload);
+
+  const sizes = [34, 88, 44, 103];
+
+  for (const size of sizes) {
+    const resizedImage = originalImage.clone().resize(size, size);
+    const resultUploadPath = path.join(
+      avatarsDir,
+      `${_id}_${size}x${size}_${originalname}`
+    );
+    await resizedImage.write(resultUploadPath);
+    avatarURLs.push(
+      path.join("avatars", `${_id}_${size}x${size}_${originalname}`)
+    );
+  }
+
+  const mainAvatarPath = path.join(avatarsDir, `${_id}_88x88_${originalname}`);
+  await originalImage.clone().resize(88, 88).write(mainAvatarPath);
+  const mainAvatarURL = path.join("avatars", `${_id}_88x88_${originalname}`);
+
+  await User.findByIdAndUpdate(_id, { avatarURL: mainAvatarURL });
+
+  await fs.unlink(tempUpload);
+
+  res.json({ avatarURLs });
 };
 
 module.exports = {

@@ -1,7 +1,12 @@
 const express = require("express");
 
 const ctrl = require("../../controllers/ownRecipes");
-const { authenticate, validateBody, isValidId } = require("../../middlewares");
+const {
+  authenticate,
+  validateBody,
+  isValidId,
+  upload,
+} = require("../../middlewares");
 const { schemas } = require("../../models/recipe");
 
 const router = express.Router();
@@ -9,6 +14,7 @@ const router = express.Router();
 router.post(
   "/add-recipe",
   authenticate,
+  upload.single("photo"),
   validateBody(schemas.addSchema),
   ctrl.addRecipe
 );

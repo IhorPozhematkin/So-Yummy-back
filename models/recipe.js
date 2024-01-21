@@ -9,19 +9,19 @@ const recipeSchema = new Schema(
     },
     title: {
       type: String,
-      required: [true, "Write title for your recepie"],
+      required: true,
     },
     category: {
       type: String,
-      required: [true, "Set category for your recepie"],
+      required: true,
     },
     instructions: {
       type: String,
-      required: [true, "Write your instructions"],
+      required: true,
     },
     description: {
       type: String,
-      required: [true, "Write description for your recepie"],
+      required: true,
     },
     thumb: {
       type: String,
@@ -31,7 +31,7 @@ const recipeSchema = new Schema(
     },
     time: {
       type: String,
-      required: [true, "Set cooking time for your recepie"],
+      required: true,
     },
     popularity: {
       type: Number,
@@ -80,6 +80,5 @@ const addSchema = Joi.object({
 const schemas = { addSchema };
 
 const Recipe = model("recipe", recipeSchema);
-const OwnRecipe = model("ownRecipes", recipeSchema, "ownRecipies");
 
-module.exports = { Recipe, OwnRecipe, schemas };
+module.exports = { Recipe, schemas };
