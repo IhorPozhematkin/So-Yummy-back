@@ -28,5 +28,6 @@ router.patch(
   upload.single("avatar"),
   ctrl.updateAvatar
 );
+router.post("/subscribe", authenticate, ctrl.subscribe);
 
 module.exports = router;

@@ -78,6 +78,25 @@ const resendVerifyEmail = async (req, res) => {
   res.json({ message: "Verify email send success" });
 };
 
+const subscribe = async (req, res) => {
+  const { email, name } = req.user;
+
+  const newsletterEmail = {
+    to: email,
+    subject: "So-Yummy Newsletter Subscription",
+    html: `Dear ${name},<br><br>
+    Thank you for subscribing to the So Yummy newsletter! You will now receive the latest news and updates.<br><br>
+    Best regards,<br>
+    So-Yummy`,
+  };
+
+  await sendEmail(newsletterEmail);
+
+  res.json({
+    message: "You have successfully subscribed to the So-Yummy newsletter!",
+  });
+};
+
 const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
@@ -169,4 +188,5 @@ module.exports = {
   updateAvatar: ctrlWrapper(updateAvatar),
   verifyEmail: ctrlWrapper(verifyEmail),
   resendVerifyEmail: ctrlWrapper(resendVerifyEmail),
+  subscribe: ctrlWrapper(subscribe),
 };

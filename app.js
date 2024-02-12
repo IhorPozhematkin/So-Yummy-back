@@ -6,6 +6,7 @@ require("dotenv").config();
 const authRouter = require("./routes/api/auth");
 const recipesRouter = require("./routes/api/recipes");
 const ownRecipesRouter = require("./routes/api/ownRecipes");
+const favoriteRecipesRouter = require("./routes/api/favoriteRecipes");
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(express.static("public"));
 app.use("/api", authRouter);
 app.use("/api/recipes", recipesRouter);
 app.use("/api", ownRecipesRouter);
+app.use("/api", favoriteRecipesRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
